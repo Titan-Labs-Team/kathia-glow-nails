@@ -12,6 +12,7 @@ export const translations = {
       managed: "Atendimento no Bey Glow Salon · Londres",
     },
     services: {
+      eyebrow: "Nossos Serviços",
       title: "Serviços",
       subtitle: "Tratamentos pensados para realçar a sua naturalidade.",
       items: [
@@ -21,8 +22,9 @@ export const translations = {
         { name: "Nail Art", desc: "Desenhos delicados e personalizados para você se expressar.", price: "a partir de £8" },
       ],
     },
-    gallery: { title: "Galeria", subtitle: "Um pouco do nosso trabalho recente." },
+    gallery: { eyebrow: "Nosso Trabalho", title: "Galeria", subtitle: "Um pouco do nosso trabalho recente." },
     reviews: {
+      eyebrow: "Depoimentos",
       title: "O que dizem nossas clientes",
       items: [
         { name: "Mariana S.", text: "Atendimento impecável e o resultado superou minhas expectativas. Voltarei sempre!" },
@@ -31,6 +33,7 @@ export const translations = {
       ],
     },
     location: {
+      eyebrow: "Venha nos Visitar",
       title: "Onde nos encontrar",
       address: "232 High Street, London NW10 4TD",
       hint: "A 2 minutos de Willesden Junction — saída Harrow Road",
@@ -56,6 +59,7 @@ export const translations = {
       managed: "Hosted at Bey Glow Salon · London",
     },
     services: {
+      eyebrow: "Our Services",
       title: "Services",
       subtitle: "Treatments designed to enhance your natural beauty.",
       items: [
@@ -65,8 +69,9 @@ export const translations = {
         { name: "Nail Art", desc: "Delicate, bespoke designs to express your style.", price: "from £8" },
       ],
     },
-    gallery: { title: "Gallery", subtitle: "A glimpse of our recent work." },
+    gallery: { eyebrow: "Our Work", title: "Gallery", subtitle: "A glimpse of our recent work." },
     reviews: {
+      eyebrow: "Testimonials",
       title: "What our clients say",
       items: [
         { name: "Mariana S.", text: "Impeccable service and the result exceeded my expectations. I'll be back!" },
@@ -75,6 +80,7 @@ export const translations = {
       ],
     },
     location: {
+      eyebrow: "Come Visit Us",
       title: "Find us",
       address: "232 High Street, London NW10 4TD",
       hint: "2 minutes from Willesden Junction — Harrow Road exit",
@@ -91,7 +97,7 @@ export const translations = {
   },
 } as const;
 
-export const WHATSAPP_NUMBER = "447000000000"; // placeholder
+export const WHATSAPP_NUMBER = "447857590694";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 export const INSTAGRAM_URL = "https://instagram.com/";
 export const ADDRESS = "232 High Street, London NW10 4TD";

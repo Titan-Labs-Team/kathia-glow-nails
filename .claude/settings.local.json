@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Rename-Item \"c:\\\\Users\\\\lucca\\\\Desktop\\\\kathia-glow-nails\\\\src\\\\assets\\\\wallpaper pink.jpg\" \"hero-bg.jpg\")",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\lucca\\\\Desktop\\\\kathia-glow-nails\\\\src\\\\assets\\\\hero-bg.jpg\" \"c:\\\\Users\\\\lucca\\\\Desktop\\\\kathia-glow-nails\\\\public\\\\hero-bg.jpg\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\lucca\\\\Desktop\\\\kathia-glow-nails\\\\public\" -Force)"
+    ]
+  }
+}
