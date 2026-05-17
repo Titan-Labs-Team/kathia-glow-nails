@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   translations,
   type Lang,
@@ -11,12 +11,14 @@ import {
 } from "@/lib/i18n";
 import { useReveal } from "@/hooks/use-reveal";
 import heroImg from "@/assets/hero-nails.jpg";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
+import tiaImg from "@/assets/tia-bg.png";
+import studioImg from "@/assets/studio-bg.jpg";
+import g1 from "@/assets/gallery-1.png";
+import g2 from "@/assets/gallery-2.png";
+import g3 from "@/assets/gallery-3.png";
+import g4 from "@/assets/gallery-4.png";
+import g5 from "@/assets/gallery-5.png";
+import g6 from "@/assets/gallery-6.png";
 import {
   Sparkles,
   Hand,
@@ -65,6 +67,46 @@ const serviceIcons = [Hand, Footprints, Sparkles, Palette];
 function Index() {
   const [lang, setLang] = useState<Lang>("pt");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifCards, setNotifCards] = useState<{ id: number; idx: number; exiting: boolean }[]>([]);
+  const notifIdRef = useRef(0);
+  const notifIdxRef = useRef(0);
+
+  useEffect(() => {
+    const items = translations[lang].reviews.items;
+    setNotifCards([]);
+    notifIdxRef.current = 0;
+
+    const addCard = () => {
+      const idx = notifIdxRef.current % items.length;
+      notifIdxRef.current++;
+      const id = notifIdRef.current++;
+
+      setNotifCards((prev) => {
+        const next = prev.map((c, i, arr) =>
+          arr.length >= 3 && i === arr.length - 1 ? { ...c, exiting: true } : c
+        );
+        return [{ id, idx, exiting: false }, ...next];
+      });
+
+      setTimeout(() => {
+        setNotifCards((prev) => prev.filter((c) => !c.exiting));
+      }, 550);
+    };
+
+    const totalItems = items.length;
+    let count = 0;
+    const intervalRef = { id: 0 };
+
+    const tick = () => {
+      addCard();
+      count++;
+      if (count >= totalItems) clearInterval(intervalRef.id);
+    };
+
+    tick();
+    intervalRef.id = setInterval(tick, 2800) as unknown as number;
+    return () => clearInterval(intervalRef.id);
+  }, [lang]);
   const [langOpen, setLangOpen] = useState(false);
 
   useEffect(() => {
@@ -170,12 +212,13 @@ function Index() {
       </header>
 
       {/* Hero */}
-      <section id="hero" className="wallpaper-bg relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
+      <section id="hero" className="wallpaper-bg relative pt-36 pb-0 md:pt-40 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-white/50" />
         <div className="relative mx-auto max-w-7xl px-6 grid md:grid-cols-2 gap-12 items-center">
           <div className="hero-fade">
-            <p className="uppercase tracking-[0.3em] text-xs text-[color:var(--rose-deep)] mb-6">
-              {t.hero.eyebrow}
+            <p className="uppercase tracking-[0.3em] text-xs mb-6">
+              <span className="md:hidden text-[color:var(--charcoal)] font-semibold text-[10px] tracking-[0.15em]">{t.hero.managed}</span>
+              <span className="hidden md:inline text-[color:var(--rose-deep)]">{t.hero.eyebrow}</span>
             </p>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-foreground">
               {t.hero.title}
@@ -191,17 +234,22 @@ function Index() {
                 <MessageCircle className="size-4" />
                 {t.hero.cta}
               </a>
-              <span className="text-xs text-muted-foreground">{t.hero.managed}</span>
+              <a
+                href="#services"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--charcoal)] text-[color:var(--charcoal)] px-7 py-4 text-sm font-medium hover:bg-[color:var(--rose-soft)] transition-colors"
+              >
+                {lang === "pt" ? "Ver serviços" : "See services"}
+              </a>
             </div>
           </div>
-          <div className="hero-fade relative">
-            <div className="absolute -inset-4 rounded-[2rem] bg-[color:var(--rose-soft)] -z-10 rotate-2" />
+          <div className="hero-fade relative -mt-32 md:mt-0 translate-x-2 md:translate-x-0">
+            <div className="hidden md:block absolute -inset-4 rounded-[2rem] bg-white -z-10 rotate-2 shadow-xl" />
             <img
-              src={heroImg}
+              src={tiaImg}
               alt="Kathia Periotto Nails"
               width={1600}
               height={1024}
-              className="rounded-[1.75rem] shadow-2xl object-cover aspect-[4/5] md:aspect-[5/6] w-full"
+              className="rounded-none md:rounded-[1.75rem] shadow-none md:shadow-2xl object-cover object-top aspect-[3/4] md:aspect-[4/5] w-full"
             />
           </div>
         </div>
@@ -215,7 +263,7 @@ function Index() {
             <h2 className="font-display text-4xl md:text-5xl">{t.services.title}</h2>
             <p className="mt-4 text-muted-foreground">{t.services.subtitle}</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {t.services.items.map((item, i) => {
               const Icon = serviceIcons[i];
               return (
@@ -225,31 +273,34 @@ function Index() {
                 >
                   <div className="h-1 bg-gradient-to-r from-[color:var(--rose-soft)] to-[color:var(--rose-deep)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute -top-6 -right-6 size-24 rounded-full bg-[color:var(--rose-soft)]/40 blur-2xl group-hover:bg-[color:var(--rose-deep)]/20 transition-colors duration-500 pointer-events-none" />
-                  <div className="flex flex-col flex-1 p-8">
-                    <div className="inline-flex size-14 items-center justify-center rounded-2xl bg-[color:var(--rose-soft)] text-[color:var(--rose-deep)] group-hover:bg-[color:var(--rose-deep)] group-hover:text-white transition-all duration-300 shadow-sm">
-                      <Icon className="size-6" />
+                  <div className="flex flex-col flex-1 p-4 md:p-8">
+                    <div className="inline-flex size-10 md:size-14 items-center justify-center rounded-xl md:rounded-2xl bg-[color:var(--rose-soft)] text-[color:var(--rose-deep)] group-hover:bg-[color:var(--rose-deep)] group-hover:text-white transition-all duration-300 shadow-sm">
+                      <Icon className="size-4 md:size-6" />
                     </div>
-                    <h3 className="mt-6 font-display text-2xl leading-snug">{item.name}</h3>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{item.desc}</p>
-                    <div className="mt-6 h-px bg-border" />
-                    <div className="mt-5 flex items-center justify-between">
-                      <span className="inline-flex items-center rounded-full bg-[color:var(--rose-soft)] px-3 py-1 text-xs font-semibold text-[color:var(--charcoal)]">
+                    <h3 className="mt-4 md:mt-6 font-display text-base md:text-2xl leading-snug">{item.name}</h3>
+                    <p className="mt-2 md:mt-3 text-xs md:text-sm text-muted-foreground leading-relaxed flex-1">{item.desc}</p>
+                    <div className="mt-4 md:mt-6 h-px bg-border" />
+                    <div className="mt-3 md:mt-5">
+                      <span className="inline-flex items-center rounded-full bg-[color:var(--rose-soft)] px-2.5 py-1 text-xs font-semibold text-[color:var(--charcoal)]">
                         {item.price}
                       </span>
-                      <a
-                        href={WHATSAPP_URL}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-[color:var(--rose-deep)] hover:text-foreground transition-colors"
-                      >
-                        <MessageCircle className="size-3.5" />
-                        {lang === "pt" ? "Agendar" : "Book now"}
-                      </a>
                     </div>
                   </div>
                 </div>
               );
             })}
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)] text-white px-8 py-4 text-sm font-medium hover:bg-foreground transition-colors shadow-lg shadow-[color:var(--rose-deep)]/20"
+            >
+              <MessageCircle className="size-4" />
+              {lang === "pt" ? "Agendar pelo WhatsApp" : "Book on WhatsApp"}
+            </a>
           </div>
         </div>
       </section>
@@ -264,10 +315,7 @@ function Index() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {galleryImages.map((src, i) => (
-              <div
-                key={i}
-                className="reveal group relative overflow-hidden rounded-2xl aspect-square"
-              >
+              <div key={i} className="reveal group relative overflow-hidden rounded-2xl aspect-square">
                 <img
                   src={src}
                   alt={`Gallery ${i + 1}`}
@@ -280,6 +328,18 @@ function Index() {
               </div>
             ))}
           </div>
+
+          <div className="mt-12 flex justify-center">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)] text-white px-7 py-4 text-sm font-medium hover:bg-foreground transition-colors shadow-md"
+            >
+              <Instagram className="size-4" />
+              {lang === "pt" ? "Veja mais no nosso Instagram!" : "See more on our Instagram!"}
+            </a>
+          </div>
         </div>
       </section>
 
@@ -287,25 +347,32 @@ function Index() {
       <section id="reviews" className="wallpaper-bg relative py-24 md:py-32">
         <div className="absolute inset-0 bg-white/35" />
         <div className="relative mx-auto max-w-7xl px-6">
-          <div className="max-w-2xl mb-16">
+          <div className="max-w-2xl mb-12">
             <p className="text-xs font-semibold text-[color:var(--rose-deep)] uppercase tracking-widest mb-4">{t.reviews.eyebrow}</p>
             <h2 className="font-display text-4xl md:text-5xl">{t.reviews.title}</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {t.reviews.items.map((r) => (
-              <div
-                key={r.name}
-                className="rounded-2xl bg-card border border-white/60 p-8 shadow-sm"
-              >
-                <div className="flex gap-1 text-[color:var(--rose-deep)]">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-4 fill-current" />
-                  ))}
+
+          <div className="max-w-lg mx-auto flex flex-col gap-3 overflow-hidden" style={{ minHeight: "280px" }}>
+            {notifCards.map((card) => {
+              const r = t.reviews.items[card.idx];
+              return (
+                <div
+                  key={card.id}
+                  style={{ animation: `${card.exiting ? "notif-out" : "notif-in"} 0.5s cubic-bezier(0.22,1,0.36,1) forwards` }}
+                  className="bg-card/95 backdrop-blur-sm rounded-2xl border border-white/70 px-5 py-4 shadow-lg"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-foreground">{r.name}</p>
+                    <div className="flex gap-0.5 text-[color:var(--rose-deep)]">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className="size-3 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">"{r.text}"</p>
                 </div>
-                <p className="mt-5 text-foreground/90 leading-relaxed">"{r.text}"</p>
-                <p className="mt-6 text-sm font-medium text-[color:var(--charcoal)]">— {r.name}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -319,44 +386,23 @@ function Index() {
             <h2 className="font-display text-4xl md:text-5xl mt-6">{t.location.title}</h2>
             <p className="mt-4 text-muted-foreground">{lang === "pt" ? "Estamos localizadas em Londres, prontas para cuidar de você." : "We're located in London, ready to take care of you."}</p>
 
-            <div className="mt-8 rounded-2xl bg-gradient-to-br from-[color:var(--rose-soft)]/60 to-[color:var(--rose-soft)]/20 border border-[color:var(--rose-soft)] p-6">
-              <div className="flex items-start gap-4">
-                <div className="inline-flex size-11 items-center justify-center rounded-xl bg-[color:var(--rose-deep)] text-white shrink-0 shadow-md shadow-[color:var(--rose-deep)]/30">
-                  <MapPin className="size-5" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">{ADDRESS}</p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{t.location.hint}</p>
-                </div>
+            <div className="mt-8 border-l-4 border-[color:var(--rose-deep)] pl-6 py-2">
+              <div className="flex items-center gap-2 mb-2">
+                <MapPin className="size-4 text-[color:var(--rose-deep)] shrink-0" />
+                <p className="font-semibold text-foreground">{ADDRESS}</p>
               </div>
-              <div className="my-5 h-px bg-[color:var(--rose-deep)]/10" />
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <span>Willesden Junction · Harrow Road</span>
-              </div>
+              <p className="text-sm text-muted-foreground">{t.location.hint}</p>
+              <p className="mt-3 text-xs text-muted-foreground/70 uppercase tracking-widest">Willesden Junction · Harrow Road</p>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a
-                href={MAPS_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)] text-white px-6 py-3 text-sm font-medium hover:bg-[color:var(--rose-deep)] transition-colors shadow-sm"
-              >
-                <MapPin className="size-4" />
-                {t.location.directions}
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--rose-deep)] text-[color:var(--rose-deep)] px-6 py-3 text-sm font-medium hover:bg-[color:var(--rose-soft)] transition-colors"
-              >
-                <MessageCircle className="size-4" />
-                {lang === "pt" ? "Agendar" : "Book now"}
-              </a>
-            </div>
           </div>
-          <div className="reveal rounded-2xl overflow-hidden border border-border shadow-md aspect-[4/3]">
+          <div className="flex flex-col gap-4">
+            <img
+              src={studioImg}
+              alt="Bey Glow Salon"
+              className="w-full rounded-2xl object-cover aspect-[4/3] shadow-md"
+            />
+            <div className="rounded-2xl overflow-hidden border border-border shadow-md aspect-[4/3]">
             <iframe
               title="Map"
               src={MAPS_EMBED}
@@ -364,7 +410,29 @@ function Index() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
+            </div>
           </div>
+        </div>
+
+        <div className="mt-12 flex flex-wrap justify-center gap-4">
+          <a
+            href={MAPS_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--charcoal)] text-[color:var(--charcoal)] px-7 py-3.5 text-sm font-medium hover:bg-[color:var(--rose-soft)] transition-colors"
+          >
+            <MapPin className="size-4" />
+            {t.location.directions}
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)] text-white px-7 py-3.5 text-sm font-medium hover:bg-foreground transition-colors shadow-md"
+          >
+            <MessageCircle className="size-4" />
+            {lang === "pt" ? "Agendar pelo WhatsApp" : "Book on WhatsApp"}
+          </a>
         </div>
       </section>
 

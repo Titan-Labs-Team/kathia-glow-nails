@@ -19,7 +19,7 @@ export const translations = {
         { name: "Manicure", desc: "Cuidado completo das unhas, cutículas e esmaltação impecável.", price: "a partir de £20" },
         { name: "Pedicure", desc: "Relaxamento, esfoliação e acabamento perfeito para os pés.", price: "a partir de £28" },
         { name: "Unhas em Gel", desc: "Durabilidade, brilho e resistência por semanas.", price: "a partir de £35" },
-        { name: "Nail Art", desc: "Desenhos delicados e personalizados para você se expressar.", price: "a partir de £8" },
+        { name: "Extensão de Unhas", desc: "Unhas alongadas com acabamento natural ou glamouroso, duradouras e resistentes.", price: "a partir de £45" },
       ],
     },
     gallery: { eyebrow: "Nosso Trabalho", title: "Galeria", subtitle: "Um pouco do nosso trabalho recente." },
@@ -66,7 +66,7 @@ export const translations = {
         { name: "Manicure", desc: "Complete care for nails, cuticles and a flawless polish.", price: "from £20" },
         { name: "Pedicure", desc: "Relaxing soak, exfoliation and a perfect finish for your feet.", price: "from £28" },
         { name: "Gel Nails", desc: "Long-lasting shine and resistance for weeks on end.", price: "from £35" },
-        { name: "Nail Art", desc: "Delicate, bespoke designs to express your style.", price: "from £8" },
+        { name: "Nail Extensions", desc: "Lengthened nails with a natural or glamorous finish, long-lasting and durable.", price: "from £45" },
       ],
     },
     gallery: { eyebrow: "Our Work", title: "Gallery", subtitle: "A glimpse of our recent work." },
@@ -99,7 +99,7 @@ export const translations = {
 
 export const WHATSAPP_NUMBER = "447857590694";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
-export const INSTAGRAM_URL = "https://instagram.com/";
+export const INSTAGRAM_URL = "https://instagram.com/kathia_periotto_nails";
 export const ADDRESS = "232 High Street, London NW10 4TD";
 export const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=232+High+Street+London+NW10+4TD";
